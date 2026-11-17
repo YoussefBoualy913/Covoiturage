@@ -1,4 +1,4 @@
-package com.covoiturage.entity.enumes;
+package com.covoiturage.entity.enums;
 
 public enum StatutReservation {
     CONFIRMEE,

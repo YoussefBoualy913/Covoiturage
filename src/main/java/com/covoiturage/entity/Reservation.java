@@ -1,6 +1,6 @@
 package com.covoiturage.entity;
 
-import com.covoiturage.entity.enumes.StatutReservation;
+import com.covoiturage.entity.enums.StatutReservation;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

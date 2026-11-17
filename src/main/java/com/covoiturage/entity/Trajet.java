@@ -1,6 +1,6 @@
 package com.covoiturage.entity;
 
-import com.covoiturage.entity.enumes.StatutTrajet;
+import com.covoiturage.entity.enums.StatutTrajet;
 import jakarta.persistence.*;
 import lombok.*;
 
