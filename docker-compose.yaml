@@ -1,0 +1,37 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: covoiturage-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: covoiturage
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: covoiturage123
+    ports:
+      - "5432:5432"
+    volumes:
+      - covoiturage_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d covoiturage"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: covoiturage-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@covoiturage.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "5050:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - covoiturage_pgadmin_data:/var/lib/pgadmin
+
+volumes:
+  covoiturage_postgres_data:
+  covoiturage_pgadmin_data:
