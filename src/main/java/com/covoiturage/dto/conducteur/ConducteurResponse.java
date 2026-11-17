@@ -1,7 +1,9 @@
 package com.covoiturage.dto.conducteur;
 
+import java.util.UUID;
+
 public record ConducteurResponse(
-        Long id,
+        UUID id,
         String nom,
         String prenom,
         String email,

@@ -1,10 +1,11 @@
 package com.covoiturage.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
-import lombok.SuperBuilder;
+import lombok.experimental.SuperBuilder;
 
 import java.util.UUID;
 
@@ -31,7 +32,7 @@ public abstract class User {
     private String email;
 
     private String telephone;
-
+    @Builder.Default
     @Column(nullable = false)
-    private boolean isActive = true;
+    private boolean active = true;
 }
