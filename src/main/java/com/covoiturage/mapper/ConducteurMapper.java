@@ -5,6 +5,7 @@ import com.covoiturage.dto.conducteur.ConducteurResponse;
 import com.covoiturage.entity.Conducteur;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 import java.util.List;
 
@@ -21,4 +22,13 @@ public interface ConducteurMapper {
     Conducteur toEntity(ConducteurRequest request);
 
     List<ConducteurResponse> toResponseList(List<Conducteur> conducteurs);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "active", ignore = true)
+    @Mapping(target = "vehicules", ignore = true)
+    @Mapping(target = "trajets", ignore = true)
+    void updateFromRequest(
+            ConducteurRequest request,
+            @MappingTarget Conducteur conducteur
+    );
 }

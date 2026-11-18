@@ -12,4 +12,5 @@ public interface ConducteurRepository extends JpaRepository<Conducteur, UUID> {
 
     Optional<Conducteur> findByNumeroPermis(String numeroPermis);
     boolean existsByNumeroPermis(String numeroPermis);
+    boolean existsByNumeroPermisAndIdNot(String numeroPermis, UUID id);
 }

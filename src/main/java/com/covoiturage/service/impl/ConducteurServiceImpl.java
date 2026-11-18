@@ -3,6 +3,7 @@ package com.covoiturage.service.impl;
 import com.covoiturage.dto.conducteur.ConducteurRequest;
 import com.covoiturage.dto.conducteur.ConducteurResponse;
 import com.covoiturage.entity.Conducteur;
+import com.covoiturage.exception.ConducteurNotFoundException;
 import com.covoiturage.exception.EmailAlreadyExistsException;
 import com.covoiturage.exception.LicenseNumberAlreadyExistsException;
 import com.covoiturage.mapper.ConducteurMapper;
@@ -10,10 +11,12 @@ import com.covoiturage.repository.ConducteurRepository;
 import com.covoiturage.repository.UserRepository;
 import com.covoiturage.service.ConducteurService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional(readOnly = true)
@@ -57,18 +60,59 @@ public class ConducteurServiceImpl implements ConducteurService {
     }
 
     @Override
-    public ConducteurResponse findById(Long id) {
-        throw new UnsupportedOperationException("");
+    public ConducteurResponse findById(UUID id) {
+
+        Conducteur conducteur = conducteurRepository.findById(id).orElseThrow(() -> new ConducteurNotFoundException("Conducteur not found with id: " + id));
+        return conducteurMapper.toResponse(conducteur);
     }
 
     @Override
     @Transactional
-    public ConducteurResponse update(Long id, ConducteurRequest request) {
-        throw new UnsupportedOperationException("");
+    public ConducteurResponse update(UUID id, ConducteurRequest request) {
+
+        Conducteur conducteur = conducteurRepository.findById(id)
+                .orElseThrow(() -> new ConducteurNotFoundException(
+                        "Conducteur introuvable avec l'id : " + id
+                ));
+
+
+        if (userRepository.existsByEmailAndIdNot(request.email(), id)) {
+            throw new EmailAlreadyExistsException(
+                    "Cet email est déjà utilisé."
+            );
+        }
+
+
+        if (conducteurRepository.existsByNumeroPermisAndIdNot(
+                request.numeroPermis(), id)) {
+            throw new LicenseNumberAlreadyExistsException(
+                    "Ce numéro de permis est déjà utilisé."
+            );
+        }
+
+
+        conducteurMapper.updateFromRequest(request, conducteur);
+
+
+        Conducteur updatedConducteur = conducteurRepository.save(conducteur);
+
+        return conducteurMapper.toResponse(updatedConducteur);
     }
 
     @Override
-    public List<ConducteurResponse> search(String nomOuEmail) {
-        throw new UnsupportedOperationException("");
+    @Transactional
+    public void delete(UUID id) {
+
+
+        Conducteur conducteur = conducteurRepository.findById(id)
+                .orElseThrow(() -> new ConducteurNotFoundException(
+                        "Conducteur introuvable avec l'id : " + id
+                ));
+
+
+        conducteur.setActive(false);
+         System.out.println("voic le status de conducteur"+conducteur.isActive());
+        conducteurRepository.save(conducteur);
     }
+
 }

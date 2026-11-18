@@ -4,6 +4,7 @@ import com.covoiturage.dto.conducteur.ConducteurRequest;
 import com.covoiturage.dto.conducteur.ConducteurResponse;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface ConducteurService {
 
@@ -11,9 +12,10 @@ public interface ConducteurService {
 
     List<ConducteurResponse> findAll();
 
-    ConducteurResponse findById(Long id);
+    ConducteurResponse findById(UUID id);
 
-    ConducteurResponse update(Long id, ConducteurRequest request);
+    ConducteurResponse update(UUID id, ConducteurRequest request);
 
-    List<ConducteurResponse> search(String nomOuEmail);
+    void delete(UUID id);
+
 }

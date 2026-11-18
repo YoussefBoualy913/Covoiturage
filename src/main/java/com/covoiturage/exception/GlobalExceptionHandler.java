@@ -41,5 +41,18 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
+    @ExceptionHandler(ConducteurNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleConducteurNotFoundException(ConducteurNotFoundException e, HttpServletRequest request) {
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .message(e.getMessage())
+                .error(HttpStatus.NOT_FOUND.getReasonPhrase())
+                .timestamp(LocalDateTime.now())
+                .path(request.getRequestURI())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
 
 }
