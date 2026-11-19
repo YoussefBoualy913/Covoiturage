@@ -5,13 +5,9 @@ import com.covoiturage.dto.vehicule.VehiculeRequest;
 import com.covoiturage.dto.vehicule.VehiculeResponse;
 import com.covoiturage.entity.Conducteur;
 import com.covoiturage.entity.Vehicule;
-import com.covoiturage.exception.BusinessRuleException;
-import com.covoiturage.exception.ConducteurNotFoundException;
-import com.covoiturage.exception.VehiculeNotFoundException;
-import com.covoiturage.exception.ImmatriculationAlreadyExistsException;
+import com.covoiturage.exception.*;
 import com.covoiturage.mapper.VehiculeMapper;
 import com.covoiturage.repository.ConducteurRepository;
-import com.covoiturage.repository.UserRepository;
 import com.covoiturage.repository.VehiculeRepository;
 import com.covoiturage.service.VehiculeService;
 import lombok.RequiredArgsConstructor;
@@ -35,13 +31,13 @@ public class VehiculeServiceImpl implements VehiculeService {
     public VehiculeResponse create(VehiculeRequest request) {
 
         if (vehiculeRepository.existsByImmatriculation(request.immatriculation())) {
-            throw new ImmatriculationAlreadyExistsException(
+            throw new DuplicateResourceException(
                     "Cette immatriculation est déjà utilisée."
             );
         }
 
         Conducteur conducteur = conducteurRepository.findById(request.conducteurId())
-                .orElseThrow(() -> new ConducteurNotFoundException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Conducteur introuvable avec l'id : " + request.conducteurId()
                 ));
 
@@ -64,13 +60,13 @@ public class VehiculeServiceImpl implements VehiculeService {
     public VehiculeResponse update(UUID id, VehiculeRequest request) {
 
         Vehicule vehicule = vehiculeRepository.findById(id)
-                .orElseThrow(() -> new VehiculeNotFoundException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Véhicule introuvable avec l'id : " + id
                 ));
 
         if (vehiculeRepository.existsByImmatriculationAndIdNot(
                 request.immatriculation(), id)) {
-            throw new ImmatriculationAlreadyExistsException(
+            throw new DuplicateResourceException(
                     "Cette immatriculation est déjà utilisée."
             );
         }
@@ -92,7 +88,7 @@ public class VehiculeServiceImpl implements VehiculeService {
     public VehiculeResponse findById(UUID id) {
 
         Vehicule vehicule = vehiculeRepository.findById(id)
-                .orElseThrow(() -> new VehiculeNotFoundException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Véhicule introuvable avec l'id : " + id
                 ));
 
@@ -113,7 +109,7 @@ public class VehiculeServiceImpl implements VehiculeService {
     public void delete(UUID id) {
 
         Vehicule vehicule = vehiculeRepository.findById(id)
-                .orElseThrow(() -> new VehiculeNotFoundException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Véhicule introuvable avec l'id : " + id
                 ));
 

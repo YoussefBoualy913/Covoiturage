@@ -3,15 +3,13 @@ package com.covoiturage.service.impl;
 import com.covoiturage.dto.conducteur.ConducteurRequest;
 import com.covoiturage.dto.conducteur.ConducteurResponse;
 import com.covoiturage.entity.Conducteur;
-import com.covoiturage.exception.ConducteurNotFoundException;
-import com.covoiturage.exception.EmailAlreadyExistsException;
-import com.covoiturage.exception.LicenseNumberAlreadyExistsException;
+import com.covoiturage.exception.DuplicateResourceException;
+import com.covoiturage.exception.ResourceNotFoundException;
 import com.covoiturage.mapper.ConducteurMapper;
 import com.covoiturage.repository.ConducteurRepository;
 import com.covoiturage.repository.UserRepository;
 import com.covoiturage.service.ConducteurService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,11 +31,11 @@ public class ConducteurServiceImpl implements ConducteurService {
 
 
         if (userRepository.existsByEmail(request.email())) {
-            throw new EmailAlreadyExistsException("Cet email est déjà utilisé.");
+            throw new DuplicateResourceException("Cet email est déjà utilisé.");
         }
 
         if (conducteurRepository.existsByNumeroPermis(request.numeroPermis())) {
-            throw new LicenseNumberAlreadyExistsException("Ce numéro de permis est déjà utilisé.");
+            throw new DuplicateResourceException("Ce numéro de permis est déjà utilisé.");
         }
 
 
@@ -62,7 +60,7 @@ public class ConducteurServiceImpl implements ConducteurService {
     @Override
     public ConducteurResponse findById(UUID id) {
 
-        Conducteur conducteur = conducteurRepository.findById(id).orElseThrow(() -> new ConducteurNotFoundException("Conducteur not found with id: " + id));
+        Conducteur conducteur = conducteurRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Conducteur not found with id: " + id));
         return conducteurMapper.toResponse(conducteur);
     }
 
@@ -71,13 +69,13 @@ public class ConducteurServiceImpl implements ConducteurService {
     public ConducteurResponse update(UUID id, ConducteurRequest request) {
 
         Conducteur conducteur = conducteurRepository.findById(id)
-                .orElseThrow(() -> new ConducteurNotFoundException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Conducteur introuvable avec l'id : " + id
                 ));
 
 
         if (userRepository.existsByEmailAndIdNot(request.email(), id)) {
-            throw new EmailAlreadyExistsException(
+            throw new DuplicateResourceException(
                     "Cet email est déjà utilisé."
             );
         }
@@ -85,7 +83,7 @@ public class ConducteurServiceImpl implements ConducteurService {
 
         if (conducteurRepository.existsByNumeroPermisAndIdNot(
                 request.numeroPermis(), id)) {
-            throw new LicenseNumberAlreadyExistsException(
+            throw new DuplicateResourceException(
                     "Ce numéro de permis est déjà utilisé."
             );
         }
@@ -105,7 +103,7 @@ public class ConducteurServiceImpl implements ConducteurService {
 
 
         Conducteur conducteur = conducteurRepository.findById(id)
-                .orElseThrow(() -> new ConducteurNotFoundException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Conducteur introuvable avec l'id : " + id
                 ));
 

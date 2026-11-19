@@ -28,9 +28,10 @@ public class Trajet {
     @Column(nullable = false)
     private Integer placesProposees;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private StatutTrajet statut ;
+    private StatutTrajet statut =StatutTrajet.PUBLIE;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "conducteur_id", nullable = false)

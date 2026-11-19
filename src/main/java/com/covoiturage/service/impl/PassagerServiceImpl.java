@@ -4,8 +4,8 @@ package com.covoiturage.service.impl;
 import com.covoiturage.dto.passager.PassagerRequest;
 import com.covoiturage.dto.passager.PassagerResponse;
 import com.covoiturage.entity.Passager;
-import com.covoiturage.exception.EmailAlreadyExistsException;
-import com.covoiturage.exception.PassagerNotFoundException;
+import com.covoiturage.exception.DuplicateResourceException;
+import com.covoiturage.exception.ResourceNotFoundException;
 import com.covoiturage.mapper.PassagerMapper;
 import com.covoiturage.repository.PassagerRepository;
 import com.covoiturage.repository.UserRepository;
@@ -31,7 +31,7 @@ public class PassagerServiceImpl implements PassagerService {
     public PassagerResponse create(PassagerRequest request) {
 
         if (userRepository.existsByEmail(request.email())) {
-            throw new EmailAlreadyExistsException("Cet email est déjà utilisé.");
+            throw new DuplicateResourceException("Cet email est déjà utilisé.");
         }
 
         Passager passager = passagerMapper.toEntity(request);
@@ -55,7 +55,7 @@ public class PassagerServiceImpl implements PassagerService {
     public PassagerResponse findById(UUID id) {
 
         Passager passager = passagerRepository.findById(id)
-                .orElseThrow(() -> new PassagerNotFoundException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Passager introuvable avec l'id : " + id
                 ));
 
@@ -67,12 +67,12 @@ public class PassagerServiceImpl implements PassagerService {
     public PassagerResponse update(UUID id, PassagerRequest request) {
 
         Passager passager = passagerRepository.findById(id)
-                .orElseThrow(() -> new PassagerNotFoundException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Passager introuvable avec l'id : " + id
                 ));
 
         if (userRepository.existsByEmailAndIdNot(request.email(), id)) {
-            throw new EmailAlreadyExistsException(
+            throw new DuplicateResourceException(
                     "Cet email est déjà utilisé."
             );
         }
@@ -89,7 +89,7 @@ public class PassagerServiceImpl implements PassagerService {
     public void delete(UUID id) {
 
         Passager passager = passagerRepository.findById(id)
-                .orElseThrow(() -> new PassagerNotFoundException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Passager introuvable avec l'id : " + id
                 ));
 

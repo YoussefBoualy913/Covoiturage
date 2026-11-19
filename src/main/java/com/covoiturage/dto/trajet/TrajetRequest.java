@@ -10,6 +10,7 @@ import java.util.UUID;
 
 public record TrajetRequest(
         @NotNull UUID vehiculeId,
+        @NotNull UUID conducteurId,
         @NotNull @Min(1) Integer placesProposees,
         @NotEmpty List<@Valid PointArretRequest> pointsArret
 ) {

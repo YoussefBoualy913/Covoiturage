@@ -1,40 +1,21 @@
 package com.covoiturage.exception;
 
 
-import com.covoiturage.exception.EmailAlreadyExistsException;
-import com.covoiturage.exception.ErrorResponse;
+import com.covoiturage.dto.error.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
 
-    @ExceptionHandler(EmailAlreadyExistsException.class)
-    public ResponseEntity<ErrorResponse> handleEmailAlreadyExistsException(EmailAlreadyExistsException e, HttpServletRequest request) {
-
-        return build(HttpStatus.CONFLICT,e.getMessage(),request);
-    }
-    @ExceptionHandler(LicenseNumberAlreadyExistsException.class)
-    public ResponseEntity<ErrorResponse> handleLicenseNumberAlreadyExistsException(LicenseNumberAlreadyExistsException e, HttpServletRequest request) {
-
-        return build(HttpStatus.CONFLICT,e.getMessage(),request);
-    }
-    @ExceptionHandler(ConducteurNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleConducteurNotFoundException(ConducteurNotFoundException e, HttpServletRequest request) {
-
-        return build(HttpStatus.NOT_FOUND,e.getMessage(),request);
-    }
-
-    @ExceptionHandler(ImmatriculationAlreadyExistsException.class)
-    public ResponseEntity<ErrorResponse> handleImmatriculationAlreadyExistsException(ImmatriculationAlreadyExistsException e, HttpServletRequest request) {
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateResourceException(DuplicateResourceException e, HttpServletRequest request) {
 
         return build(HttpStatus.CONFLICT,e.getMessage(),request);
     }
@@ -45,10 +26,15 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.CONFLICT,e.getMessage(),request);
     }
 
-    @ExceptionHandler(VehiculeNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleVehiculeNotFoundException(VehiculeNotFoundException e, HttpServletRequest request) {
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException e, HttpServletRequest request) {
 
         return build(HttpStatus.NOT_FOUND,e.getMessage(),request);
+    }
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException e, HttpServletRequest request) {
+
+        return build(HttpStatus.UNAUTHORIZED,e.getMessage(),request);
     }
 
 

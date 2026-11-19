@@ -1,4 +1,4 @@
-package com.covoiturage.exception;
+package com.covoiturage.dto.error;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
