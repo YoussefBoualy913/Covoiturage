@@ -9,6 +9,7 @@ public record VehiculeResponse(
         String immatriculation,
         String couleur,
         int capacite,
-        UUID conducteurId
+        String nomConducteur,
+        String prenomConducteur
 ) {
 }
