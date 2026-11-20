@@ -24,7 +24,7 @@ public interface TrajetService {
 //
 //    Page<TrajetRechercheResponse> rechercher(RechercheTrajetRequest criteres, Pageable pageable);
 //
-//    void terminer(UUID conducteurId, UUID trajetId);
-//
-//    void annuler(UUID conducteurId, UUID trajetId);
+    void terminer(UUID trajetId);
+
+    void annuler( UUID trajetId);
 }

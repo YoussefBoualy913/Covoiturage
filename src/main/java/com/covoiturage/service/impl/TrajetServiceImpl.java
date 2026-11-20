@@ -1,12 +1,14 @@
 package com.covoiturage.service.impl;
 import com.covoiturage.dto.trajet.*;
 import com.covoiturage.entity.*;
+import com.covoiturage.entity.enums.StatutReservation;
 import com.covoiturage.entity.enums.StatutTrajet;
 
 import com.covoiturage.exception.AccessDeniedException;
 import com.covoiturage.exception.BusinessRuleException;
 import com.covoiturage.exception.ResourceNotFoundException;
 import com.covoiturage.mapper.TrajetMapper;
+import com.covoiturage.repository.ReservationRepository;
 import com.covoiturage.repository.TrajetRepository;
 import com.covoiturage.repository.VehiculeRepository;
 
@@ -29,6 +31,7 @@ public class TrajetServiceImpl implements TrajetService {
     private final TrajetRepository trajetRepository;
     private final VehiculeRepository vehiculeRepository;
     private final TrajetMapper trajetMapper;
+    private final ReservationRepository reservationRepository;
 
     @Override
     public TrajetResponse create(TrajetRequest request) {
@@ -105,6 +108,57 @@ public class TrajetServiceImpl implements TrajetService {
                 ));
 
         return trajetMapper.toResponse(trajet);
+    }
+
+    @Override
+    @Transactional
+    public void terminer(UUID id) {
+
+        Trajet trajet = trajetRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Trajet introuvable avec l'id : " + id
+                ));
+
+        if (trajet.getStatut() != StatutTrajet.PUBLIE
+                && trajet.getStatut() != StatutTrajet.COMPLET) {
+            throw new BusinessRuleException(
+                    "Impossible de terminer ce trajet avec son statut actuel."
+            );
+        }
+
+        if (trajet.getDateDepart().isAfter(LocalDateTime.now())) {
+            throw new BusinessRuleException(
+                    "Impossible de terminer un trajet avant son départ."
+            );
+        }
+
+        trajet.setStatut(StatutTrajet.TERMINE);
+    }
+
+    @Override
+    @Transactional
+    public void annuler(UUID id) {
+
+        Trajet trajet = trajetRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Trajet introuvable avec l'id : " + id
+                ));
+
+        if (trajet.getStatut() == StatutTrajet.ANNULE) {
+            throw new BusinessRuleException("Ce trajet est déjà annulé.");
+        }
+
+
+        reservationRepository.annulerReservations(
+                trajet.getId(),
+                StatutReservation.CONFIRMEE,
+                StatutReservation.ANNULEE
+        );
+
+
+        trajet.setStatut(StatutTrajet.ANNULE);
+
+        trajetRepository.save(trajet);
     }
 
 

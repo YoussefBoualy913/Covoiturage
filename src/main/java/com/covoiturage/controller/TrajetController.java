@@ -32,7 +32,7 @@ public class TrajetController {
     }
 
 
-    @GetMapping
+    @GetMapping("/conducteur/{conducteurId}")
     public ResponseEntity<List<TrajetResponse>> findByConducteur(@PathVariable UUID conducteurId) {
 
         return ResponseEntity.ok(trajetService.findByConducteur(conducteurId));
@@ -46,6 +46,51 @@ public class TrajetController {
         return ResponseEntity.ok(trajetService.findById(id));
     }
 
+//    @GetMapping("/recherche")
+//    public ResponseEntity<Page<TrajetResponse>> rechercher(
+//            @RequestParam String villeDepart,
+//            @RequestParam String villeArrivee,
+//            @RequestParam
+//            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+//            LocalDate date,
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "10") int size) {
+//
+//        return ResponseEntity.ok(
+//                trajetService.rechercher(
+//                        villeDepart, villeArrivee, date, page, size
+//                )
+//        );
+//    }
+//
+//
+//    @GetMapping("/{id}/reservations")
+//    public ResponseEntity<List<ReservationResponse>> findReservations(
+//            @PathVariable UUID id) {
+//
+//        return ResponseEntity.ok(
+//                trajetService.findReservations(id)
+//        );
+//    }
+//
+//
+    @PatchMapping("/{id}/terminer")
+    public ResponseEntity<Void> terminer(
+            @PathVariable UUID id) {
 
+        trajetService.terminer(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
+
+    @PatchMapping("/{id}/annuler")
+    public ResponseEntity<Void> annuler(
+            @PathVariable UUID id) {
+
+        trajetService.annuler(id);
+
+        return ResponseEntity.noContent().build();
+    }
 
 }

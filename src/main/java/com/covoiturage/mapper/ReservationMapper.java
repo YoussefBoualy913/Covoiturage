@@ -13,8 +13,8 @@ public interface ReservationMapper {
 
     @Mapping(source = "passager.id", target = "passagerId")
     @Mapping(source = "trajet.id", target = "trajetId")
-    @Mapping(source = "pointMontee.id", target = "pointMonteeId")
-    @Mapping(source = "pointDescente.id", target = "pointDescenteId")
+    @Mapping(source = "pointMontee.ville", target = "villeMontee")
+    @Mapping(source = "pointDescente.ville", target = "villeDescente")
     ReservationResponse toResponse(Reservation reservation);
 
     List<ReservationResponse> toResponseList(List<Reservation> reservations);
