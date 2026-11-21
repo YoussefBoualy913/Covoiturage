@@ -4,10 +4,14 @@ import java.util.List;
 import java.util.UUID;
 
 import com.covoiturage.dto.reservation.ReservationResponse;
+import com.covoiturage.dto.trajet.RechercheTrajetRequest;
+import com.covoiturage.dto.trajet.TrajetRechercheResponse;
 import com.covoiturage.dto.trajet.TrajetRequest;
 import com.covoiturage.dto.trajet.TrajetResponse;
 import com.covoiturage.service.TrajetService;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,24 +50,14 @@ public class TrajetController {
         return ResponseEntity.ok(trajetService.findById(id));
     }
 
-//    @GetMapping("/recherche")
-//    public ResponseEntity<Page<TrajetResponse>> rechercher(
-//            @RequestParam String villeDepart,
-//            @RequestParam String villeArrivee,
-//            @RequestParam
-//            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-//            LocalDate date,
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "10") int size) {
-//
-//        return ResponseEntity.ok(
-//                trajetService.rechercher(
-//                        villeDepart, villeArrivee, date, page, size
-//                )
-//        );
-//    }
-//
-//
+    @GetMapping("/rechercher")
+    public Page<TrajetRechercheResponse> rechercher(
+            @Valid @ModelAttribute RechercheTrajetRequest request,
+            @PageableDefault(size = 10) Pageable pageable
+    ) {
+        return trajetService.rechercher(request, pageable);
+    }
+
 //    @GetMapping("/{id}/reservations")
 //    public ResponseEntity<List<ReservationResponse>> findReservations(
 //            @PathVariable UUID id) {

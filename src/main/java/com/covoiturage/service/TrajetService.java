@@ -22,7 +22,7 @@ public interface TrajetService {
 //
 //    List<ReservationResponse> findReservations(UUID conducteurId, UUID trajetId);
 //
-//    Page<TrajetRechercheResponse> rechercher(RechercheTrajetRequest criteres, Pageable pageable);
+   Page<TrajetRechercheResponse> rechercher(RechercheTrajetRequest criteres, Pageable pageable);
 //
     void terminer(UUID trajetId);
 

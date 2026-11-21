@@ -15,10 +15,13 @@ import com.covoiturage.repository.VehiculeRepository;
 import com.covoiturage.service.TrajetService;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -109,6 +112,32 @@ public class TrajetServiceImpl implements TrajetService {
 
         return trajetMapper.toResponse(trajet);
     }
+
+
+    @Override
+    public Page<TrajetRechercheResponse> rechercher(
+            RechercheTrajetRequest request,
+            Pageable pageable
+    ) {
+
+        LocalDateTime debutJournee = request.date().atStartOfDay();
+        LocalDateTime finJournee = request.date().plusDays(1).atStartOfDay();
+
+        Page<Trajet> trajets = trajetRepository.rechercher(
+                request.villeDepart(),
+                request.villeArrivee(),
+                debutJournee,
+                finJournee,
+                request.nombrePlaces(),
+                request.prixMax(),
+                StatutTrajet.PUBLIE,
+                StatutReservation.CONFIRMEE,
+                pageable
+        );
+
+        return trajets.map(trajetMapper::toRechercheResponse);
+    }
+
 
     @Override
     @Transactional

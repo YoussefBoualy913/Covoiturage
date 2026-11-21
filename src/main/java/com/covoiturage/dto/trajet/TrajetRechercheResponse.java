@@ -11,6 +11,7 @@ public record TrajetRechercheResponse(
         String villeArrivee,
         LocalDateTime heureDepart,
         BigDecimal prixSegment,
-        int placesRestantes
+        int placesRestantes,
+        String nomConducteur
 ) {
 }

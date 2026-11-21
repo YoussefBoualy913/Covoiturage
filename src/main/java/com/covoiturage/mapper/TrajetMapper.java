@@ -1,5 +1,6 @@
 package com.covoiturage.mapper;
 
+import com.covoiturage.dto.trajet.TrajetRechercheResponse;
 import com.covoiturage.dto.trajet.TrajetRequest;
 import com.covoiturage.dto.trajet.TrajetResponse;
 import com.covoiturage.entity.Trajet;
@@ -19,6 +20,14 @@ public interface TrajetMapper {
             expression = "java(trajet.getPointsArret().get(trajet.getPointsArret().size() - 1).getVille())")
     @Mapping(target = "placesRestantes", ignore = true)
     TrajetResponse toResponse(Trajet trajet);
+
+    @Mapping(source = "conducteur.nom", target = "nomConducteur")
+    @Mapping(target = "villeDepart",
+            expression = "java(trajet.getPointsArret().get(0).getVille())")
+    @Mapping(target = "villeArrivee",
+            expression = "java(trajet.getPointsArret().get(trajet.getPointsArret().size() - 1).getVille())")
+    @Mapping(target = "placesRestantes", ignore = true)
+    TrajetRechercheResponse toRechercheResponse(Trajet trajet);
 
     List<TrajetResponse> toResponseList(List<Trajet> trajets);
 
